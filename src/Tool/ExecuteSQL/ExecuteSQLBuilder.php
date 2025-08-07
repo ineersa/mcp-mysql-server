@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Tool\ExecuteSQL;
 
 use App\Capability\ToolChain;
+use App\Server\RequestHandler\InitializeHandler;
 use Psr\Log\LoggerInterface;
 use Symfony\AI\McpSdk\Capability\PromptChain;
 use Symfony\AI\McpSdk\Capability\ResourceChain;
 use Symfony\AI\McpSdk\Server\NotificationHandler\InitializedHandler;
 use Symfony\AI\McpSdk\Server\NotificationHandlerInterface;
-use Symfony\AI\McpSdk\Server\RequestHandler\InitializeHandler;
 use Symfony\AI\McpSdk\Server\RequestHandler\PingHandler;
 use Symfony\AI\McpSdk\Server\RequestHandler\PromptGetHandler;
 use Symfony\AI\McpSdk\Server\RequestHandler\PromptListHandler;
@@ -48,7 +48,8 @@ class ExecuteSQLBuilder
         ], $logger);
 
         return [
-            new InitializeHandler(),
+            // TODO remove later, trying to connect to PHPStorm AI Assistant, and it's using older protocol
+            new InitializeHandler("mysql-server", "dev", "2024-11-05"),
             new PingHandler(),
             new PromptListHandler($promptManager),
             new PromptGetHandler($promptManager),
