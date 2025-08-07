@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Builder;
+namespace App\Tool\ExecuteSQL;
 
-
+use App\Capability\ToolChain;
+use Psr\Log\LoggerInterface;
 use Symfony\AI\McpSdk\Capability\PromptChain;
 use Symfony\AI\McpSdk\Capability\ResourceChain;
-use Symfony\AI\McpSdk\Capability\ToolChain;
 use Symfony\AI\McpSdk\Server\NotificationHandler\InitializedHandler;
 use Symfony\AI\McpSdk\Server\NotificationHandlerInterface;
 use Symfony\AI\McpSdk\Server\RequestHandler\InitializeHandler;
@@ -20,12 +20,19 @@ use Symfony\AI\McpSdk\Server\RequestHandler\ToolCallHandler;
 use Symfony\AI\McpSdk\Server\RequestHandler\ToolListHandler;
 use Symfony\AI\McpSdk\Server\RequestHandlerInterface;
 
-class QueryServerBuilder
+class ExecuteSQLBuilder
 {
+    public function __construct(
+        private readonly ExecuteSQLMetadata $metadata,
+        private readonly ExecuteSQLExecutor $executor,
+    ) {
+
+    }
+
     /**
      * @return list<RequestHandlerInterface>
      */
-    public static function buildRequestHandlers(): array
+    public function buildRequestHandlers(LoggerInterface $logger): array
     {
         $promptManager = new PromptChain([
             // ... Prompts
@@ -36,8 +43,9 @@ class QueryServerBuilder
         ]);
 
         $toolManager = new ToolChain([
-            // ... Tools
-        ]);
+            $this->metadata,
+            $this->executor,
+        ], $logger);
 
         return [
             new InitializeHandler(),
@@ -54,7 +62,7 @@ class QueryServerBuilder
     /**
      * @return list<NotificationHandlerInterface>
      */
-    public static function buildNotificationHandlers(): array
+    public function buildNotificationHandlers(): array
     {
         return [
             new InitializedHandler(),

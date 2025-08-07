@@ -1,6 +1,6 @@
 {
     "name": "ineersa/mcp-mysql-server",
-    "description": "MCP server implementation to query MySQL database",
+    "description": "MCP server implementation to work with MySQL database",
     "version": "0.0.1",
     "type": "project",
     "license": "MIT",
@@ -29,7 +29,8 @@
         "symfony/yaml": "7.3.*"
     },
     "require-dev": {
-        "symfony/maker-bundle": "1.x-dev"
+        "symfony/maker-bundle": "1.x-dev",
+        "symfony/var-dumper": "7.3.*"
     },
     "config": {
         "allow-plugins": {

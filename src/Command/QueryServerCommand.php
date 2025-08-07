@@ -2,13 +2,16 @@
 
 namespace App\Command;
 
+use App\Logger\JsonConsoleLogger;
+use App\Tool\ExecuteSQL\ExecuteSQLBuilder;
+use Symfony\AI\McpSdk\Message\Factory;
+use Symfony\AI\McpSdk\Server;
+use Symfony\AI\McpSdk\Server\JsonRpcHandler;
+use Symfony\AI\McpSdk\Server\Transport\Stdio\SymfonyConsoleTransport;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:query-server',
@@ -16,34 +19,38 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class QueryServerCommand extends Command
 {
-    public function __construct()
+    public function __construct(
+        private readonly ExecuteSQLBuilder $builder,
+    )
     {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $logger = new JsonConsoleLogger($output);
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
-        }
+        // Configure the JsonRpcHandler and build the functionality
+        $jsonRpcHandler = new JsonRpcHandler(
+            new Factory(),
+            $this->builder->buildRequestHandlers($logger),
+            $this->builder->buildNotificationHandlers(),
+            $logger,
+        );
 
-        if ($input->getOption('option1')) {
-            // ...
-        }
+        // Set up the server
+        $server = new Server($jsonRpcHandler, $logger);
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        // Create the transport layer using Symfony Console
+        $transport = new SymfonyConsoleTransport($input, $output);
 
-        return Command::SUCCESS;
+        // Start MCP server
+        $server->connect($transport);
+
+        return Command::FAILURE;
     }
 }
