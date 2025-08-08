@@ -38,8 +38,8 @@ final class ExecuteSQLExecutor implements ToolExecutorInterface, IdentifierInter
             return new ToolCallResult($throwable->getMessage(), 'text', 'text/plain', true);
         }
 
-        $json = json_encode($rows, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        if ($json === false) {
+        $json = json_encode($rows, \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+        if (false === $json) {
             $json = '[]';
         }
 

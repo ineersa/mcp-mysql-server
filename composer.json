@@ -62,8 +62,8 @@
         "symfony/polyfill-php82": "*"
     },
     "scripts": {
-        "cs-fix": "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
-        "cs-check": "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --dry-run --diff --config=.php-cs-fixer.dist.php",
+        "cs-fix": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
+        "cs-check": "vendor/bin/php-cs-fixer fix --dry-run --diff --config=.php-cs-fixer.dist.php",
         "auto-scripts": {
             "cache:clear": "symfony-cmd"
         },
@@ -73,7 +73,12 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon.dist"
+        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon.dist",
+        "lint": [
+            "@cs-fix",
+            "@auto-scripts",
+            "@phpstan"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"

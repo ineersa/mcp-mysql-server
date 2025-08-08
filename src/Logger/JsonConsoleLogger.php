@@ -7,6 +7,7 @@ namespace App\Logger;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -15,6 +16,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * Outputs log messages as JSON to stderr while respecting console verbosity.
  *
+ * @see ConsoleLogger
+ *
  * @TODO consider switching to monolog instead
  */
 class JsonConsoleLogger extends AbstractLogger
@@ -22,13 +25,13 @@ class JsonConsoleLogger extends AbstractLogger
     /** @var array<string, int> */
     private array $verbosityLevelMap = [
         LogLevel::EMERGENCY => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::ALERT     => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::CRITICAL  => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::ERROR     => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::WARNING   => OutputInterface::VERBOSITY_NORMAL,
-        LogLevel::NOTICE    => OutputInterface::VERBOSITY_VERBOSE,
-        LogLevel::INFO      => OutputInterface::VERBOSITY_VERY_VERBOSE,
-        LogLevel::DEBUG     => OutputInterface::VERBOSITY_DEBUG,
+        LogLevel::ALERT => OutputInterface::VERBOSITY_NORMAL,
+        LogLevel::CRITICAL => OutputInterface::VERBOSITY_NORMAL,
+        LogLevel::ERROR => OutputInterface::VERBOSITY_NORMAL,
+        LogLevel::WARNING => OutputInterface::VERBOSITY_NORMAL,
+        LogLevel::NOTICE => OutputInterface::VERBOSITY_VERBOSE,
+        LogLevel::INFO => OutputInterface::VERBOSITY_VERY_VERBOSE,
+        LogLevel::DEBUG => OutputInterface::VERBOSITY_DEBUG,
     ];
 
     /**
@@ -58,15 +61,15 @@ class JsonConsoleLogger extends AbstractLogger
         // Check if the current verbosity level allows this message to be displayed
         if ($output->getVerbosity() >= $this->verbosityLevelMap[$level]) {
             $logData = [
-                'level'     => $level,
-                'message'   => $this->interpolate((string) $message, $context),
-                'context'   => $context,
+                'level' => $level,
+                'message' => $this->interpolate((string) $message, $context),
+                'context' => $context,
                 'timestamp' => (new \DateTimeImmutable())->format(\DateTimeInterface::RFC3339),
             ];
 
             // Output as JSON
-            $json = json_encode($logData, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            if ($json === false) {
+            $json = json_encode($logData, \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+            if (false === $json) {
                 $json = '{"error":"Failed to encode log message"}';
             }
             $output->writeln($json, $this->verbosityLevelMap[$level]);

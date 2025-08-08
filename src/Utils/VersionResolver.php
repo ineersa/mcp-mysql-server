@@ -24,7 +24,7 @@ class VersionResolver
         return $composerJson['version'];
     }
 
-/**
+    /**
      * @return array<string, mixed>
      */
     private function getComposerJson(): array

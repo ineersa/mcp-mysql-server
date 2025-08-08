@@ -34,10 +34,10 @@ final readonly class ExecuteSQLMetadata implements MetadataInterface
     public function getInputSchema(): array
     {
         return [
-            'type'       => 'object',
+            'type' => 'object',
             'properties' => [
                 'sql' => [
-                    'type'        => 'string',
+                    'type' => 'string',
                     'description' => 'The SQL query to execute.',
                 ],
             ],

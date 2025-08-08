@@ -47,7 +47,6 @@ class ExecuteSQLBuilder
         ], $logger);
 
         return [
-            // TODO remove later, trying to connect to PHPStorm AI Assistant, and it's using older protocol
             new InitializeHandler('mysql-server', 'dev', '2024-11-05'),
             new PingHandler(),
             new PromptListHandler($promptManager),

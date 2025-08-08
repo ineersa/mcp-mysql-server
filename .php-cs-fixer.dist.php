@@ -18,24 +18,23 @@ return (new Config())
     ->setIndent('    ')
     ->setLineEnding("\n")
     ->setRules([
-        '@Symfony'       => true,
+        '@Symfony' => true,
         '@Symfony:risky' => true,
         // Common project preferences
-        'declare_strict_types'       => true,
+        'declare_strict_types' => true,
         'native_function_invocation' => [
             'include' => ['@compiler_optimized'],
-            'scope'   => 'namespaced',
-            'strict'  => true,
+            'scope' => 'namespaced',
+            'strict' => true,
         ],
         'ordered_imports' => [
             'sort_algorithm' => 'alpha',
-            'imports_order'  => ['class', 'function', 'const'],
+            'imports_order' => ['class', 'function', 'const'],
         ],
         'no_superfluous_phpdoc_tags' => false,
-        'phpdoc_align'               => ['align' => 'left'],
-        'binary_operator_spaces'     => [
-            'default'   => 'single_space',
-            'operators' => ['=>' => 'align_single_space_minimal'],
+        'phpdoc_align' => ['align' => 'left'],
+        'binary_operator_spaces' => [
+            'default' => 'single_space',
         ],
     ])
     ->setFinder($finder)
