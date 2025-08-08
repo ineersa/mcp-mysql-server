@@ -8,19 +8,19 @@ use App\Utils\VersionResolver;
 use Symfony\AI\McpSdk\Capability\Tool\MetadataInterface;
 use Symfony\AI\McpSdk\Capability\Tool\ToolAnnotationsInterface;
 
-readonly final class ExecuteSQLMetadata implements MetadataInterface
+final readonly class ExecuteSQLMetadata implements MetadataInterface
 {
     public const string TITLE = 'MySQL MCP Server to execute SQL queries.';
     public const string NAME = 'execute_sql';
 
     public function __construct(
-        private VersionResolver $versionResolver
+        private VersionResolver $versionResolver,
     ) {
     }
 
     public function getName(): string
     {
-        return ExecuteSQLMetadata::NAME;
+        return self::NAME;
     }
 
     public function getDescription(): ?string
@@ -34,14 +34,14 @@ readonly final class ExecuteSQLMetadata implements MetadataInterface
     public function getInputSchema(): array
     {
         return [
-            'type' => 'object',
+            'type'       => 'object',
             'properties' => [
                 'sql' => [
-                    'type' => 'string',
+                    'type'        => 'string',
                     'description' => 'The SQL query to execute.',
                 ],
             ],
-            'required' => ["sql"],
+            'required' => ['sql'],
         ];
     }
 
@@ -52,7 +52,7 @@ readonly final class ExecuteSQLMetadata implements MetadataInterface
 
     public function getTitle(): ?string
     {
-        return ExecuteSQLMetadata::TITLE;
+        return self::TITLE;
     }
 
     public function getAnnotations(): ?ToolAnnotationsInterface
@@ -62,18 +62,22 @@ readonly final class ExecuteSQLMetadata implements MetadataInterface
             {
                 return false;
             }
+
             public function getIdempotentHint(): ?bool
             {
                 return true;
             }
+
             public function getOpenWorldHint(): ?bool
             {
                 return false;
             }
+
             public function getReadOnlyHint(): ?bool
             {
                 return true;
             }
+
             public function getTitle(): ?string
             {
                 return ExecuteSQLMetadata::TITLE;

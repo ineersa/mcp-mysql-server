@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Server\RequestHandler;
 
 use Symfony\AI\McpSdk\Message\Request;
@@ -19,9 +21,9 @@ final class InitializeHandler extends BaseRequestHandler
     {
         return new Response($message->id, [
             'protocolVersion' => $this->protocolVersion,
-            'capabilities' => [
-                'prompts' => ['listChanged' => false],
-                'tools' => ['listChanged' => false],
+            'capabilities'    => [
+                'prompts'   => ['listChanged' => false],
+                'tools'     => ['listChanged' => false],
                 'resources' => ['listChanged' => false, 'subscribe' => false],
             ],
             'serverInfo' => ['name' => $this->name, 'version' => $this->version],

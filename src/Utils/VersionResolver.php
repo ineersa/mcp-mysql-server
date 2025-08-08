@@ -10,7 +10,7 @@ class VersionResolver
 {
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
-        private readonly string $projectDir
+        private readonly string $projectDir,
     ) {
     }
 
@@ -24,20 +24,23 @@ class VersionResolver
         return $composerJson['version'];
     }
 
+/**
+     * @return array<string, mixed>
+     */
     private function getComposerJson(): array
     {
-        $composerJsonPath = $this->projectDir . '/composer.json';
+        $composerJsonPath = $this->projectDir.'/composer.json';
         if (!file_exists($composerJsonPath)) {
             throw new \RuntimeException('composer.json not found');
         }
 
         $content = file_get_contents($composerJsonPath);
-        if ($content === false) {
+        if (false === $content) {
             throw new \RuntimeException('Unable to read composer.json');
         }
 
         $data = json_decode($content, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (\JSON_ERROR_NONE !== json_last_error()) {
             throw new \RuntimeException('Invalid JSON in composer.json');
         }
 

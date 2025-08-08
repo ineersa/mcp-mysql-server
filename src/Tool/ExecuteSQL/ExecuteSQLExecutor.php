@@ -11,15 +11,14 @@ use Symfony\AI\McpSdk\Capability\Tool\IdentifierInterface;
 use Symfony\AI\McpSdk\Capability\Tool\ToolCall;
 use Symfony\AI\McpSdk\Capability\Tool\ToolCallResult;
 use Symfony\AI\McpSdk\Capability\Tool\ToolExecutorInterface;
-use function count;
 
 final class ExecuteSQLExecutor implements ToolExecutorInterface, IdentifierInterface, LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
     public function __construct(
-        private readonly Connection $connection
-    ){
+        private readonly Connection $connection,
+    ) {
     }
 
     public function getName(): string
@@ -32,13 +31,18 @@ final class ExecuteSQLExecutor implements ToolExecutorInterface, IdentifierInter
         $sql = $input->arguments['sql'];
 
         try {
-            $this->logger->info('Executing SQL: ' . $sql);
+            $this->logger->info('Executing SQL: '.$sql);
             $rows = $this->connection->fetchAllAssociative($sql);
-            $this->logger->info('SQL executed. Results count: ' . count($rows));
+            $this->logger->info('SQL executed. Results count: '.\count($rows));
         } catch (\Throwable $throwable) {
             return new ToolCallResult($throwable->getMessage(), 'text', 'text/plain', true);
         }
 
-        return new ToolCallResult(json_encode($rows));
+        $json = json_encode($rows, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        if ($json === false) {
+            $json = '[]';
+        }
+
+        return new ToolCallResult($json);
     }
 }

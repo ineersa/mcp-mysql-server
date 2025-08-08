@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Logger\JsonConsoleLogger;
@@ -21,8 +23,7 @@ class QueryServerCommand extends Command
 {
     public function __construct(
         private readonly ExecuteSQLBuilder $builder,
-    )
-    {
+    ) {
         parent::__construct();
     }
 

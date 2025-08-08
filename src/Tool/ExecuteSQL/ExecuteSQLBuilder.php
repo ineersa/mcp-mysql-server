@@ -26,7 +26,6 @@ class ExecuteSQLBuilder
         private readonly ExecuteSQLMetadata $metadata,
         private readonly ExecuteSQLExecutor $executor,
     ) {
-
     }
 
     /**
@@ -49,7 +48,7 @@ class ExecuteSQLBuilder
 
         return [
             // TODO remove later, trying to connect to PHPStorm AI Assistant, and it's using older protocol
-            new InitializeHandler("mysql-server", "dev", "2024-11-05"),
+            new InitializeHandler('mysql-server', 'dev', '2024-11-05'),
             new PingHandler(),
             new PromptListHandler($promptManager),
             new PromptGetHandler($promptManager),
