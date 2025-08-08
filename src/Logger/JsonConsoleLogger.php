@@ -45,9 +45,10 @@ class JsonConsoleLogger extends AbstractLogger
     }
 
     /**
+     * @param string|\Stringable $message
      * @param array<string, mixed> $context
      */
-    public function log($level, string|\Stringable $message, array $context = []): void
+    public function log($level, $message, array $context = []): void
     {
         if (!isset($this->verbosityLevelMap[$level])) {
             throw new InvalidArgumentException(\sprintf('The log level "%s" does not exist.', $level));
