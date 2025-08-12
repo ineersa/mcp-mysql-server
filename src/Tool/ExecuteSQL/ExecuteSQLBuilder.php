@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace App\Tool\ExecuteSQL;
 
 use App\Capability\ToolChain;
-use App\Server\RequestHandler\InitializeHandler;
 use Psr\Log\LoggerInterface;
+use Symfony\AI\McpSdk\Capability\Prompt\PromptCapability;
 use Symfony\AI\McpSdk\Capability\PromptChain;
+use Symfony\AI\McpSdk\Capability\Resource\ResourceCapability;
 use Symfony\AI\McpSdk\Capability\ResourceChain;
+use Symfony\AI\McpSdk\Capability\Server\Implementation;
+use Symfony\AI\McpSdk\Capability\Server\ProtocolVersionEnum;
+use Symfony\AI\McpSdk\Capability\Server\ServerCapabilities;
+use Symfony\AI\McpSdk\Capability\Tool\ToolCapability;
 use Symfony\AI\McpSdk\Server\NotificationHandler\InitializedHandler;
 use Symfony\AI\McpSdk\Server\NotificationHandlerInterface;
+use Symfony\AI\McpSdk\Server\RequestHandler\InitializeHandler;
 use Symfony\AI\McpSdk\Server\RequestHandler\PingHandler;
 use Symfony\AI\McpSdk\Server\RequestHandler\PromptGetHandler;
 use Symfony\AI\McpSdk\Server\RequestHandler\PromptListHandler;
@@ -20,11 +26,11 @@ use Symfony\AI\McpSdk\Server\RequestHandler\ToolCallHandler;
 use Symfony\AI\McpSdk\Server\RequestHandler\ToolListHandler;
 use Symfony\AI\McpSdk\Server\RequestHandlerInterface;
 
-class ExecuteSQLBuilder
+readonly class ExecuteSQLBuilder
 {
     public function __construct(
-        private readonly ExecuteSQLMetadata $metadata,
-        private readonly ExecuteSQLExecutor $executor,
+        private ExecuteSQLMetadata $metadata,
+        private ExecuteSQLExecutor $executor,
     ) {
     }
 
@@ -46,8 +52,19 @@ class ExecuteSQLBuilder
             $this->executor,
         ], $logger);
 
+        $implementation = new Implementation();
+        $serverCapabilities = new ServerCapabilities(
+            prompts: new PromptCapability(listChanged: false),
+            resources: new ResourceCapability(subscribe: false, listChanged: false),
+            tools: new ToolCapability(listChanged: false),
+        );
+
         return [
-            new InitializeHandler('mysql-server', 'dev', '2024-11-05'),
+            new InitializeHandler(
+                implementation: $implementation,
+                serverCapabilities: $serverCapabilities,
+                protocolVersion: ProtocolVersionEnum::V2024_11_05,
+            ),
             new PingHandler(),
             new PromptListHandler($promptManager),
             new PromptGetHandler($promptManager),
