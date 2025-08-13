@@ -11,7 +11,7 @@ use Symfony\AI\McpSdk\Capability\PromptChain;
 use Symfony\AI\McpSdk\Capability\Resource\ResourceCapability;
 use Symfony\AI\McpSdk\Capability\ResourceChain;
 use Symfony\AI\McpSdk\Capability\Server\Implementation;
-use Symfony\AI\McpSdk\Capability\Server\ProtocolVersionEnum;
+use Symfony\AI\McpSdk\Capability\Server\ProtocolVersion;
 use Symfony\AI\McpSdk\Capability\Server\ServerCapabilities;
 use Symfony\AI\McpSdk\Capability\Tool\ToolCapability;
 use Symfony\AI\McpSdk\Server\NotificationHandler\InitializedHandler;
@@ -63,7 +63,7 @@ readonly class ExecuteSQLBuilder
             new InitializeHandler(
                 implementation: $implementation,
                 serverCapabilities: $serverCapabilities,
-                protocolVersion: ProtocolVersionEnum::V2024_11_05,
+                protocolVersion: ProtocolVersion::V2024_11_05,
             ),
             new PingHandler(),
             new PromptListHandler($promptManager),

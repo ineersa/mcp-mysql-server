@@ -731,12 +731,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ineersa/ai.git",
-                "reference": "21d731ca926a9641bd73e476473e4bcb0c05503c"
+                "reference": "2a024f1be0f5c56357875f4a6758e1ee5e27e132"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ineersa/ai/zipball/21d731ca926a9641bd73e476473e4bcb0c05503c",
-                "reference": "21d731ca926a9641bd73e476473e4bcb0c05503c",
+                "url": "https://api.github.com/repos/ineersa/ai/zipball/2a024f1be0f5c56357875f4a6758e1ee5e27e132",
+                "reference": "2a024f1be0f5c56357875f4a6758e1ee5e27e132",
                 "shasum": ""
             },
             "require-dev": {
@@ -756,7 +756,7 @@
             "support": {
                 "source": "https://github.com/ineersa/ai/tree/capabilities-and-initialize-handler"
             },
-            "time": "2025-08-12T00:18:11+00:00"
+            "time": "2025-08-13T16:36:04+00:00"
         },
         {
             "name": "symfony/cache",
