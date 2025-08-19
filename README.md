@@ -47,7 +47,14 @@ Inside our server command we build and start a server.
 ```php
 protected function execute(InputInterface $input, OutputInterface $output): int
 {
-    $logger = new JsonConsoleLogger($output);
+    $handler = $this->createHandler($input->getOption('output'), $input->getOption('filename'));
+    if (null === $handler) {
+        $output->writeln((string) json_encode(['error' => 'Invalid output configuration']));
+
+        return Command::FAILURE;
+    }
+
+    $logger = new Logger('mcp', [$handler]);
 
     // Configure the JsonRpcHandler and build the functionality
     $jsonRpcHandler = new JsonRpcHandler(
@@ -122,11 +129,10 @@ public function buildNotificationHandlers(): array
 ## Notable changes from the original SDK classes/demo, TODOs
 
 1. I had to extend `\Symfony\AI\McpSdk\Capability\ToolChain` to inject logger inside tools. It's not the best solution, better would be to autowire it or set it up in `services.yaml`
-2. While testing in MCP inspector, I've noticed that `STDERR` logs wasn't parsed, since it's not JSON. I've added a simple JSON logger that writes to `STDERR` instead of usage of `ConsoleLogger`. This is not ideal solution, better way would be to set up `Monolog`.
-3. Writing to `STDERR` breaks some clients (for example, Jetbrains AI Assistant), need to investigate how to log using [Notifications](https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/logging)
-4. Jetbrains AI Assistant runs with protocol version `2024-11-05` so I had to replace `InitializeHandler` to accept a protocol version. It's dirty, but it works.
-5. Add tests
-6. Add Docker and docker-compose support
+2. Writing to `STDERR` breaks some clients (for example, Jetbrains AI Assistant), need to investigate how to log using [Notifications](https://modelcontextprotocol.io/specification/2025-06-18/server/utilities/logging)
+3. Jetbrains AI Assistant runs with protocol version `2024-11-05` so I had to replace `InitializeHandler` to accept a protocol version. It's dirty, but it works.
+4. Add tests
+5. Add Docker and docker-compose support
 
 ## MCP Server functionality
 
