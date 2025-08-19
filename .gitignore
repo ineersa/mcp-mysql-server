@@ -1,3 +1,4 @@
+.crush
 
 ###> symfony/framework-bundle ###
 /.env.local

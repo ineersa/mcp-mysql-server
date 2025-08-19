@@ -24,11 +24,12 @@
         "ext-iconv": "*",
         "doctrine/dbal": "^4.3",
         "doctrine/doctrine-bundle": "^2.15",
+        "symfony/ai": "dev-capabilities-and-initialize-handler",
         "symfony/console": "7.3.*",
         "symfony/dotenv": "7.3.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "7.3.*",
-        "symfony/ai": "dev-capabilities-and-initialize-handler",
+        "symfony/monolog-bundle": "^3.10",
         "symfony/runtime": "7.3.*",
         "symfony/yaml": "7.3.*"
     },
