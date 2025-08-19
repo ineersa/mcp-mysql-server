@@ -29,27 +29,20 @@ use Symfony\AI\McpSdk\Server\RequestHandlerInterface;
 readonly class ExecuteSQLBuilder
 {
     public function __construct(
-        private ExecuteSQLMetadata $metadata,
-        private ExecuteSQLExecutor $executor,
+        private readonly ExecuteSQLTool $sqlTool,
     ) {
     }
 
     /**
-     * @return list<RequestHandlerInterface>
+     * @return array<RequestHandlerInterface>
      */
     public function buildRequestHandlers(LoggerInterface $logger): array
     {
-        $promptManager = new PromptChain([
-            // ... Prompts
-        ]);
-
-        $resourceManager = new ResourceChain([
-            // ... Resources
-        ]);
+        $promptManager = new PromptChain([]);
+        $resourceManager = new ResourceChain([]);
 
         $toolManager = new ToolChain([
-            $this->metadata,
-            $this->executor,
+            $this->sqlTool,
         ], $logger);
 
         $implementation = new Implementation();

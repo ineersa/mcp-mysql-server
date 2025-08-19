@@ -1,6 +1,6 @@
 # MCP SQL Server
 
-I've tried to integrate popular MCP servers for MySQL to Jetbrains AI Assistant, and all of them failed, so I decided to create simple demo to test it. 
+I've tried to integrate popular MCP servers for MySQL to Jetbrains AI Assistant, and all of them failed, so I decided to create a simple demo to test it. 
 
 **WARNING** this is not production ready, mostly it's a demo of how to use [Symfony MCP SDK](https://github.com/symfony/mcp-sdk) to create your own [MCP server](https://modelcontextprotocol.io/overview) using.
 
