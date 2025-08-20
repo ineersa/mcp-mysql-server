@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Tool\ExecuteSQL\ExecuteSQLBuilder;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Symfony\AI\McpSdk\Message\Factory;
 use Symfony\AI\McpSdk\Server;
@@ -41,7 +42,7 @@ class QueryServerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $handler = $this->createHandler($input->getOption('output'), $input->getOption('filename'));
+        $handler = $this->createHandler($input->getOption('output'), $input->getOption('filename'), $output->getVerbosity());
         if (null === $handler) {
             $output->writeln((string) json_encode(['error' => 'Invalid output configuration']));
 
@@ -74,10 +75,30 @@ class QueryServerCommand extends Command
         return str_starts_with($path, '/');
     }
 
-    private function createHandler(string $outputOption, ?string $filename): ?StreamHandler
+    private function mapVerbosityToLogLevel(int $verbosity): Level
+    {
+        // Map Symfony console verbosity to Monolog log levels
+        // No verbosity (normal) -> WARNING
+        // -v -> NOTICE
+        // -vv -> INFO
+        // -vvv -> DEBUG
+        if ($verbosity >= OutputInterface::VERBOSITY_DEBUG) {
+            return Level::Debug;
+        }
+        if ($verbosity >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
+            return Level::Info;
+        }
+        if ($verbosity >= OutputInterface::VERBOSITY_VERBOSE) {
+            return Level::Notice;
+        }
+
+        return Level::Warning;
+    }
+
+    private function createHandler(string $outputOption, ?string $filename, int $verbosity = OutputInterface::VERBOSITY_NORMAL): ?StreamHandler
     {
         if ('stderr' === $outputOption) {
-            $handler = new StreamHandler('php://stderr');
+            $handler = new StreamHandler('php://stderr', $this->mapVerbosityToLogLevel($verbosity));
             $handler->setFormatter(new JsonFormatter());
 
             return $handler;
@@ -91,7 +112,7 @@ class QueryServerCommand extends Command
                 $projectDir = $this->projectDir;
                 $path = rtrim($projectDir, '/').'/'.$filename;
             }
-            $handler = new StreamHandler($path);
+            $handler = new StreamHandler($path, $this->mapVerbosityToLogLevel($verbosity));
             $handler->setFormatter(new JsonFormatter());
 
             return $handler;
